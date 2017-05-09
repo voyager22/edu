@@ -1,0 +1,407 @@
+<body> 
+<script type="text/javascript"> 
+$(function(){ 
+var editing ; //判断用户是否处于编辑状态 
+var flag ; //判断新增和修改方法 
+$('#set_schedule').datagrid({ 
+idField:'id' , 
+fitColumns: false , 
+url:'scheduleAction_loadScheduleData.action?sureDocumentId='+$("#sureDocumentId").val() , 
+striped: true , 
+loadMsg: '数据正在加载,请耐心的等待...' , 
+rownumbers:true , 
+singleSelect : true, 
+frozenColumns:[[ 
+{field:'ck' , checkbox:true} 
+]], 
+columns:[[ 
+{ 
+field:'dateTime' , 
+title:'时间' , 
+width:100 , 
+align:'center' , 
+editor:{ 
+type:'datebox' , 
+options:{ 
+required:true , 
+missingMessage:'时间必填!' , 
+editable:false 
+} 
+} 
+}, 
+{ 
+field:'morningTime' , 
+title:'上午上课时间段' , 
+width:126 , 
+align:'center', 
+editor:{ 
+type:'validatebox' , 
+options:{ 
+required:true , 
+missingMessage:'时间段必填!' 
+} 
+} 
+}, 
+{ 
+field:'morningCourse' , 
+title:'上午课程' , 
+width:100 , 
+editor:{ 
+type:'validatebox' , 
+options:{ 
+required:true , 
+missingMessage:'课程必填!' 
+} 
+} 
+}, 
+{ 
+field:'aa1' , 
+title:'主讲老师分类' , 
+width:100 , 
+editor : { 
+type : 'combobox', 
+options : { 
+url:'codeTypeAction_search.action?parentId=0&type=27', 
+valueField:'id' , 
+textField:'name', 
+onSelect:function(data){ 
+var row = $('#set_schedule').datagrid('getSelected'); 
+var rowIndex = $('#set_schedule').datagrid('getRowIndex',row);//获取行号 
+var thisTarget = $('#set_schedule').datagrid('getEditor', {'index':rowIndex,'field':'aa1'}).target; 
+var value = thisTarget.combobox('getValue'); 
+var target = $('#set_schedule').datagrid('getEditor', {'index':rowIndex,'field':'bb1'}).target; 
+target.combobox('clear'); //清除原来的数据 
+var url = 'codeTypeAction_search.action?type=28&parentId='+value; 
+target.combobox('reload', url);//联动下拉列表重载 
+} 
+} 
+} 
+}, 
+{ 
+field:'bb1' , 
+title:'主讲老师细类' , 
+width:100 , 
+editor : { 
+type : 'combobox', 
+options : { 
+url:'codeTypeAction_search.action?type=28', 
+valueField:'id' , 
+textField:'name', 
+onSelect:function(data){ 
+var row = $('#set_schedule').datagrid('getSelected'); 
+var rowIndex = $('#set_schedule').datagrid('getRowIndex',row);//获取行号 
+var thisTarget = $('#set_schedule').datagrid('getEditor', {'index':rowIndex,'field':'bb1'}).target; 
+var value = thisTarget.combobox('getValue'); 
+var target = $('#set_schedule').datagrid('getEditor', {'index':rowIndex,'field':'morningTeacherId'}).target; 
+target.combobox('clear'); //清除原来的数据 
+var url = 'teacherAction_search.action?teacherTypeId2='+value; 
+target.combobox('reload', url);//联动下拉列表重载 
+} 
+} 
+} 
+}, 
+{ 
+field:'morningTeacherId' , 
+title:'主讲老师' , 
+width:100 , 
+editor : { 
+type : 'combobox', 
+options : { 
+url:'teacherAction_search.action', 
+valueField:'id' , 
+textField:'name' 
+} 
+} 
+}, 
+{ 
+field:'afternoonTime' , 
+title:'下午上课时间段' , 
+width:126 , 
+align:'center' , 
+editor:{ 
+type:'validatebox' , 
+options:{ 
+required:true , 
+missingMessage:'时间段必填!' 
+} 
+} 
+}, 
+{ 
+field:'afternoonCourse' , 
+title:'下午课程' , 
+width:100 , 
+editor:{ 
+type:'validatebox' , 
+options:{ 
+required:true , 
+missingMessage:'课程必填!' 
+} 
+} 
+}, 
+{ 
+field:'aa2' , 
+title:'主讲老师分类' , 
+width:100 , 
+editor : { 
+type : 'combobox', 
+options : { 
+url:'codeTypeAction_search.action?parentId=0&type=27', 
+valueField:'id' , 
+textField:'name', 
+onSelect:function(data){ 
+var row = $('#set_schedule').datagrid('getSelected'); 
+var rowIndex = $('#set_schedule').datagrid('getRowIndex',row);//获取行号 
+var thisTarget = $('#set_schedule').datagrid('getEditor', {'index':rowIndex,'field':'aa2'}).target; 
+var value = thisTarget.combobox('getValue'); 
+var target = $('#set_schedule').datagrid('getEditor', {'index':rowIndex,'field':'bb2'}).target; 
+target.combobox('clear'); //清除原来的数据 
+var url = 'codeTypeAction_search.action?type=28&parentId='+value; 
+target.combobox('reload', url);//联动下拉列表重载 
+} 
+} 
+} 
+}, 
+{ 
+field:'bb2' , 
+title:'主讲老师细类' , 
+width:100 , 
+editor : { 
+type : 'combobox', 
+options : { 
+url:'codeTypeAction_search.action?type=28', 
+valueField:'id' , 
+textField:'name', 
+onSelect:function(data){ 
+var row = $('#set_schedule').datagrid('getSelected'); 
+var rowIndex = $('#set_schedule').datagrid('getRowIndex',row);//获取行号 
+var thisTarget = $('#set_schedule').datagrid('getEditor', {'index':rowIndex,'field':'bb2'}).target; 
+var value = thisTarget.combobox('getValue'); 
+var target = $('#set_schedule').datagrid('getEditor', {'index':rowIndex,'field':'afternoonTeacherId'}).target; 
+target.combobox('clear'); //清除原来的数据 
+var url = 'teacherAction_search.action?teacherTypeId2='+value; 
+target.combobox('reload', url);//联动下拉列表重载 
+} 
+} 
+} 
+}, 
+{ 
+field:'afternoonTeacherId' , 
+title:'主讲老师' , 
+width:100 , 
+editor : { 
+type : 'combobox', 
+options : { 
+url:'teacherAction_search.action', 
+valueField:'id' , 
+textField:'name' 
+} 
+} 
+}, 
+{ 
+field:'eveningTime' , 
+title:'晚上上课时间段' , 
+width:126 , 
+align:'center' , 
+editor:{ 
+type:'validatebox' , 
+options:{ 
+required:true , 
+missingMessage:'时间段必填!' 
+} 
+} 
+}, 
+{ 
+field:'eveningCourse' , 
+title:'晚上课程' , 
+width:100 , 
+editor:{ 
+type:'validatebox' , 
+options:{ 
+required:true , 
+missingMessage:'课程必填!' 
+} 
+} 
+}, 
+{ 
+field:'aa3' , 
+title:'主讲老师分类' , 
+width:100 , 
+editor : { 
+type : 'combobox', 
+options : { 
+url:'codeTypeAction_search.action?parentId=0&type=27', 
+valueField:'id' , 
+textField:'name', 
+onSelect:function(data){ 
+var row = $('#set_schedule').datagrid('getSelected'); 
+var rowIndex = $('#set_schedule').datagrid('getRowIndex',row);//获取行号 
+var thisTarget = $('#set_schedule').datagrid('getEditor', {'index':rowIndex,'field':'aa3'}).target; 
+var value = thisTarget.combobox('getValue'); 
+var target = $('#set_schedule').datagrid('getEditor', {'index':rowIndex,'field':'bb3'}).target; 
+target.combobox('clear'); //清除原来的数据 
+var url = 'codeTypeAction_search.action?type=28&parentId='+value; 
+target.combobox('reload', url);//联动下拉列表重载 
+} 
+} 
+} 
+}, 
+{ 
+field:'bb3' , 
+title:'主讲老师细类' , 
+width:100 , 
+editor : { 
+type : 'combobox', 
+options : { 
+url:'codeTypeAction_search.action?type=28', 
+valueField:'id' , 
+textField:'name', 
+onSelect:function(data){ 
+var row = $('#set_schedule').datagrid('getSelected'); 
+var rowIndex = $('#set_schedule').datagrid('getRowIndex',row);//获���行号 
+var thisTarget = $('#set_schedule').datagrid('getEditor', {'index':rowIndex,'field':'bb3'}).target; 
+var value = thisTarget.combobox('getValue'); 
+var target = $('#set_schedule').datagrid('getEditor', {'index':rowIndex,'field':'eveningTeacherId'}).target; 
+target.combobox('clear'); //清除原来的数据 
+var url = 'teacherAction_search.action?teacherTypeId2='+value; 
+target.combobox('reload', url);//联动下拉列表重载 
+} 
+} 
+} 
+}, 
+{ 
+field:'eveningTeacherId' , 
+title:'主讲老师' , 
+width:100 , 
+editor : { 
+type : 'combobox', 
+options : { 
+url:'teacherAction_search.action', 
+valueField:'id' , 
+textField:'name' 
+} 
+} 
+} 
+]] , 
+pagination: true , 
+pageSize: 10 , 
+pageList:[5,10,15,20,50] , 
+toolbar:[ 
+{ 
+text:'新增课程', 
+iconCls:'icon-add' , 
+handler:function(){ 
+if(editing == undefined){ 
+flag = 'add'; 
+//1 先取消所有的选中状态 
+$('#set_schedule').datagrid('unselectAll'); 
+//2追加一行 
+$('#set_schedule').datagrid('appendRow',{description:''}); 
+//3获取当前页的行号 
+editing = $('#set_schedule').datagrid('getRows').length -1; 
+//4选中并开启编辑状态 
+$('#set_schedule').datagrid('selectRow',editing); 
+$('#set_schedule').datagrid('beginEdit', editing); 
+} 
+} 
+}/* ,{ 
+text:'修改课程', 
+iconCls:'icon-edit' , 
+handler:function(){ 
+var arr = $('#set_schedule').datagrid('getSelections'); 
+if(arr.length != 1){ 
+$.messager.show({ 
+title:'提示信息', 
+msg:'只能选择一条记录进行修改!' 
+}); 
+} else { 
+if(editing == undefined){ 
+flag = 'edit'; 
+//根据行记录对象获取该行的索引位置 
+editing = $('#set_schedule').datagrid('getRowIndex' , arr[0]); 
+//开启编辑状态 
+$('#set_schedule').datagrid('beginEdit',editing); 
+} 
+} 
+} 
+} */,{ 
+text:'保存课程', 
+iconCls:'icon-save' , 
+handler:function(){ 
+//保存之前进行数据的校验 , 然后结束编辑并师傅编辑状态字段 
+if($('#set_schedule').datagrid('validateRow',editing)){ 
+$('#set_schedule').datagrid('endEdit', editing); 
+editing = undefined; 
+} 
+} 
+},{ 
+text:'删除课程', 
+iconCls:'icon-remove' , 
+handler:function(){ 
+var arr = $('#set_schedule').datagrid('getSelections'); 
+if(arr.length <= 0 ){ 
+$.messager.show({ 
+title:'提示信息', 
+msg:'请选择进行删除操作!' 
+}); 
+} else { 
+$.messager.confirm('提示信息' , '确认删除?' , function(r){ 
+if(r){ 
+var ids = ''; 
+for(var i = 0 ; i < arr.length ; i++){ 
+ids += arr[i].id + ','; 
+} 
+ids = ids.substring(0,ids.length-1); 
+$.post('scheduleAction_delete.action' , {ids:ids},function(result){ 
+$('#set_schedule').datagrid('reload'); 
+$.messager.show({ 
+title:'提示信息', 
+msg:'操作成功!' 
+}); 
+}); 
+} else { 
+return ; 
+} 
+}); 
+} 
+} 
+},{ 
+text:'取消操作', 
+iconCls:'icon-cancel' , 
+handler:function(){ 
+//回滚数据 
+$('#set_schedule').datagrid('rejectChanges'); 
+editing = undefined; 
+} 
+} 
+] , 
+onAfterEdit:function(index , record){ 
+var data = $('#moduleform').serialize(); 
+$.post(flag=='add'?'scheduleAction_addSchedule.action?'+data:'scheduleAction_updateSchedule.action' , record , function(result){ 
+var data = $.parseJSON(result); 
+$('#set_schedule').datagrid('reload'); 
+$.messager.show({ 
+title:'提示信息', 
+msg:data.message 
+}); 
+},'text'); 
+} 
+}); 
+}); 
+</script> 
+<form id="moduleform" method="post"> 
+<s:hidden name="sureDocumentId" id="sureDocumentId"></s:hidden> 
+<table cellspacing="1" cellpadding="5" class="tb_background2" width="100%"> 
+<tr> 
+<td width="20%" class="td_right">总学时：</td> 
+<td width="28%" class="td_left"> 
+<s:textfield name="totalLearnTime" id="totalLearnTime" size="32"/>学时 
+</td> 
+<td width="20%" class="td_right">是否可见：</td> 
+<td width="28%" class="td_left"> 
+<s:select list="#{'0':'可见','1':'不可见' }" cssStyle="width:200px;" name="type" id="type"></s:select> 
+</td> 
+</tr> 
+</table> 
+</form> 
+<table id="set_schedule"></table> 
+</body>
